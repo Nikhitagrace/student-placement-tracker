@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>TrackerHub • Companies</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M12 3 2 8l10 5 10-5-10-5Z" stroke="#e7effa" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M6 11v6c0 1 3 3 6 3s6-2 6-3v-6" stroke="#e7effa" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <h1>TrackerHub</h1>
+        <small>Student Panel</small>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a href="profile.html">Profile</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="companies.html">Companies</a>
+      <a href="applications.html">Applications</a>
+      <a href="placements.html">Placements</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a class="logout" href="register.html">Logout</a>
+    </div>
+  </aside>
+
+  <section class="main">
+    <header class="topbar">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.3-4.3" stroke="#64748b" stroke-width="2" stroke-linecap="round"/><path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" stroke="#64748b" stroke-width="2"/></svg>
+        <input placeholder="Search companies, roles, or events..." />
+      </div>
+
+      <div class="topbar-right">
+        <button class="icon-btn" title="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="#334155" stroke-width="2"/><path d="M19.4 15a7.8 7.8 0 0 0 .1-2l2-1.2-2-3.4-2.3.6a7.6 7.6 0 0 0-1.7-1L13 3h-4l-.5 2.9a7.6 7.6 0 0 0-1.7 1l-2.3-.6-2 3.4 2 1.2a7.8 7.8 0 0 0 .1 2l-2 1.2 2 3.4 2.3-.6a7.6 7.6 0 0 0 1.7 1L9 21h4l.5-2.9a7.6 7.6 0 0 0 1.7-1l2.3.6 2-3.4-2-1.2Z" stroke="#334155" stroke-width="2"/></svg>
+        </button>
+        <div class="user">
+          <div class="avatar"></div>
+          <div class="meta">
+            <b>Alex Johnson</b>
+            <span>CS Senior ’24</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-title">
+        <div>
+          <h2>Companies & Opportunities</h2>
+          <p>Filter drives by role, package, and eligibility.</p>
+        </div>
+        <span class="pill">Settings</span>
+      </div>
+
+      <div class="stat-grid" style="grid-template-columns: repeat(4, minmax(0,1fr)); margin-bottom: 12px;">
+        <div class="card stat"><div class="left"><div class="ico">📁</div><div><div class="k">Total Opportunities</div><div class="v">45</div></div></div></div>
+        <div class="card stat"><div class="left"><div class="ico">✅</div><div><div class="k">Eligible for You</div><div class="v">12</div></div></div></div>
+        <div class="card stat"><div class="left"><div class="ico">🗂️</div><div><div class="k">Applied Drives</div><div class="v">08</div></div></div></div>
+        <div class="card stat"><div class="left"><div class="ico">🕒</div><div><div class="k">Upcoming Events</div><div class="v">03</div></div></div></div>
+      </div>
+
+      <div class="toolbar card" style="padding: 12px 14px;">
+        <div class="filters">
+          <input id="companySearch" class="filter-input" placeholder="Search by company name, role or tech stack..." />
+          <select id="roleFilter" class="select">
+            <option value="all">Role: All Types</option>
+            <option value="sde">SDE</option>
+            <option value="analyst">Analyst</option>
+            <option value="finance">Finance</option>
+          </select>
+          <select class="select">
+            <option>Package: Any CTC</option>
+            <option>10 - 15 LPA</option>
+            <option>15 - 24 LPA</option>
+            <option>25+ LPA</option>
+          </select>
+          <select id="eligFilter" class="select">
+            <option value="all">Eligibility: All</option>
+            <option value="eligible">Eligible</option>
+            <option value="not-eligible">Not Eligible</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" onclick="alert('Hook this to backend filter query later.');">
+          Apply Filters
+        </button>
+      </div>
+
+      <div class="cards-grid">
+        <div class="card company" data-company="Google" data-role="sde" data-elig="eligible">
+          <div class="head">
+            <div style="display:flex; gap:12px;">
+              <div class="logo">G</div>
+              <div>
+                <h3>Google</h3>
+                <p>Software Development Engineer</p>
+              </div>
+            </div>
+            <span class="badge success">ELIGIBLE</span>
+          </div>
+
+          <div class="meta">
+            <div class="line">💰 CTC: 18 - 24 LPA</div>
+            <div class="line">📅 Drive Date: 15 Oct, 2023</div>
+            <div class="line">📍 Location: Bangalore, IN</div>
+          </div>
+
+          <div class="foot">
+            <button class="btn btn-primary" onclick="alert('Apply action -> store application record.');">Apply Now</button>
+            <button class="btn btn-outline" onclick="alert('Open details page later.');">View</button>
+          </div>
+        </div>
+
+        <div class="card company" data-company="Atlassian" data-role="analyst" data-elig="eligible">
+          <div class="head">
+            <div style="display:flex; gap:12px;">
+              <div class="logo">A</div>
+              <div>
+                <h3>Atlassian</h3>
+                <p>Data Analyst - Analytics</p>
+              </div>
+            </div>
+            <span class="badge success">ELIGIBLE</span>
+          </div>
+
+          <div class="meta">
+            <div class="line">💰 CTC: 15 - 18 LPA</div>
+            <div class="line">📅 Drive Date: 22 Oct, 2023</div>
+            <div class="line">📍 Location: Remote / Sydney</div>
+          </div>
+
+          <div class="foot">
+            <button class="btn btn-primary">Apply Now</button>
+            <button class="btn btn-outline">View</button>
+          </div>
+        </div>
+
+        <div class="card company" data-company="J.P. Morgan" data-role="finance" data-elig="not-eligible" style="opacity:0.72;">
+          <div class="head">
+            <div style="display:flex; gap:12px;">
+              <div class="logo">J</div>
+              <div>
+                <h3>J.P. Morgan</h3>
+                <p>Financial Analyst</p>
+              </div>
+            </div>
+            <span class="badge neutral">NOT ELIGIBLE</span>
+          </div>
+
+          <div class="meta">
+            <div class="line">💰 CTC: 14.5 LPA</div>
+            <div class="line">📅 Drive Date: 28 Oct, 2023</div>
+            <div class="line" style="color:#ef4444;">⚠ Reason: CGPA Requirement &lt; 8.0</div>
+          </div>
+
+          <div class="foot">
+            <button class="btn btn-outline" disabled style="opacity:0.6; cursor:not-allowed;">Ineligible</button>
+            <button class="btn btn-outline">View</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

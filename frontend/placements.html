@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>TrackerHub • Placements</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M12 3 2 8l10 5 10-5-10-5Z" stroke="#e7effa" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M6 11v6c0 1 3 3 6 3s6-2 6-3v-6" stroke="#e7effa" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div><h1>TrackerHub</h1><small>Student Panel</small></div>
+    </div>
+
+    <nav class="nav">
+      <a href="profile.html">Profile</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="companies.html">Companies</a>
+      <a href="applications.html">Applications</a>
+      <a href="placements.html">Placements</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a class="logout" href="register.html">Logout</a>
+    </div>
+  </aside>
+
+  <section class="main">
+    <header class="topbar">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.3-4.3" stroke="#64748b" stroke-width="2" stroke-linecap="round"/><path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" stroke="#64748b" stroke-width="2"/></svg>
+        <input placeholder="Search interviews, companies..." />
+      </div>
+
+      <div class="topbar-right">
+        <div class="user">
+          <div class="avatar"></div>
+          <div class="meta">
+            <b>Alex Johnson</b>
+            <span>STUDENT</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-title">
+        <div>
+          <h2>Placement Status</h2>
+          <p>Track your placement journey and interview history.</p>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 18px 22px;">
+        <span class="badge success">PLACED</span>
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-top: 10px;">
+          <div>
+            <div style="font-size: 28px; font-weight: 1000;">TechFlow Solutions</div>
+            <div class="small" style="margin-top:6px;">Junior Software Developer • Engineering Team</div>
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-primary" onclick="alert('Show offer details page later.');">View Offer</button>
+            <button class="btn btn-outline" data-print>Download Contract</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 16px;">
+        <div class="card-h">
+          <b>Interview History</b>
+        </div>
+        <div class="card-b" style="padding:0;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Company</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>Oct 24, 2023</td>
+                <td style="font-weight:1000;">TechFlow Solutions</td>
+                <td>Final HR Round</td>
+                <td><span class="badge success">Offer Accepted</span></td>
+                <td class="actions"><button class="btn-mini">View</button></td>
+              </tr>
+
+              <tr>
+                <td>Oct 18, 2023</td>
+                <td style="font-weight:1000;">Google</td>
+                <td>Technical Screen</td>
+                <td><span class="badge warning">Scheduled</span></td>
+                <td class="actions"><button class="btn-mini">Join</button></td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
