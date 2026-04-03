@@ -1,9 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const Student = require('../models/Student');
+const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/adminAuth');
+const studentAuth = require('../middleware/studentAuth');
+const validateObjectId = require('../middleware/validateObjectId');
 
-// Get all students with search functionality
-router.get('/', async (req, res) => {
+// Get all students with search functionality (Admin only)
+router.get('/', auth, adminAuth, async (req, res) => {
   try {
     const { search } = req.query;
     let query = {};
@@ -30,10 +34,19 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get a single student by ID
-router.get('/:id', async (req, res) => {
+// Get a single student by ID (Admin only or own profile)
+router.get('/:id', auth, validateObjectId, async (req, res) => {
   try {
-    const student = await Student.findById(req.params.id);
+    const studentId = req.params.id;
+    
+    // Admin can access any student, students can only access their own profile
+    if (req.user.role === 'user' && req.user._id.toString() !== studentId) {
+      return res.status(403).json({
+        message: 'Access denied. You can only view your own profile.'
+      });
+    }
+    
+    const student = await Student.findById(studentId);
     
     if (!student) {
       return res.status(404).json({ message: 'Student not found' });
@@ -49,8 +62,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Add a new student
-router.post('/', async (req, res) => {
+// Add a new student (Admin only)
+router.post('/', auth, adminAuth, async (req, res) => {
   try {
     const { name, branch, cgpa, email, phone } = req.body;
 
@@ -86,15 +99,23 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Update a student
-router.put('/:id', async (req, res) => {
+// Update a student (Admin only or own profile)
+router.put('/:id', auth, validateObjectId, async (req, res) => {
   try {
     const { name, branch, cgpa, email, phone } = req.body;
+    const studentId = req.params.id;
+    
+    // Admin can update any student, students can only update their own profile
+    if (req.user.role === 'user' && req.user._id.toString() !== studentId) {
+      return res.status(403).json({
+        message: 'Access denied. You can only update your own profile.'
+      });
+    }
 
     // Check if another student with this email exists
     const existingStudent = await Student.findOne({ 
       email, 
-      _id: { $ne: req.params.id } 
+      _id: { $ne: studentId } 
     });
     
     if (existingStudent) {
@@ -104,7 +125,7 @@ router.put('/:id', async (req, res) => {
     }
 
     const student = await Student.findByIdAndUpdate(
-      req.params.id,
+      studentId,
       { name, branch, cgpa, email, phone },
       { new: true, runValidators: true }
     );
@@ -126,10 +147,11 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Delete a student
-router.delete('/:id', async (req, res) => {
+// Delete a student (Admin only)
+router.delete('/:id', auth, adminAuth, validateObjectId, async (req, res) => {
   try {
-    const student = await Student.findByIdAndDelete(req.params.id);
+    const studentId = req.params.id;
+    const student = await Student.findByIdAndDelete(studentId);
 
     if (!student) {
       return res.status(404).json({ message: 'Student not found' });

@@ -3,13 +3,15 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import StudentDashboard from './pages/StudentDashboard';
 import Students from './pages/Students';
 import Companies from './pages/Companies';
 import Placements from './pages/Placements';
 import AddStudent from './pages/AddStudent';
 import AddCompany from './pages/AddCompany';
 import AddPlacement from './pages/AddPlacement';
+import ProtectedRoute, { AdminRoute, StudentRoute, AuthRoute } from './components/ProtectedRoute';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -38,45 +40,106 @@ function App() {
         {user && <Navbar user={user} onLogout={handleLogout} />}
         <div className="container">
           <Routes>
+            {/* Public Routes */}
             <Route 
               path="/login" 
-              element={!user ? <Login onLogin={handleLogin} /> : <Navigate to="/dashboard" />} 
+              element={!user ? <Login onLogin={handleLogin} /> : <Navigate to={user.role === 'admin' ? '/admin-dashboard' : '/student-dashboard'} />} 
             />
             <Route 
               path="/register" 
-              element={!user ? <Register onLogin={handleLogin} /> : <Navigate to="/dashboard" />} 
+              element={!user ? <Register onLogin={handleLogin} /> : <Navigate to={user.role === 'admin' ? '/admin-dashboard' : '/student-dashboard'} />} 
             />
+
+            {/* Admin Routes */}
             <Route 
-              path="/dashboard" 
-              element={user ? <Dashboard /> : <Navigate to="/login" />} 
+              path="/admin-dashboard" 
+              element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              } 
             />
             <Route 
               path="/students" 
-              element={user ? <Students /> : <Navigate to="/login" />} 
+              element={
+                <AdminRoute>
+                  <Students />
+                </AdminRoute>
+              } 
             />
             <Route 
               path="/students/add" 
-              element={user ? <AddStudent /> : <Navigate to="/login" />} 
+              element={
+                <AdminRoute>
+                  <AddStudent />
+                </AdminRoute>
+              } 
             />
             <Route 
               path="/companies" 
-              element={user ? <Companies /> : <Navigate to="/login" />} 
+              element={
+                <AdminRoute>
+                  <Companies />
+                </AdminRoute>
+              } 
             />
             <Route 
               path="/companies/add" 
-              element={user ? <AddCompany /> : <Navigate to="/login" />} 
-            />
-            <Route 
-              path="/placements" 
-              element={user ? <Placements /> : <Navigate to="/login" />} 
+              element={
+                <AdminRoute>
+                  <AddCompany />
+                </AdminRoute>
+              } 
             />
             <Route 
               path="/placements/add" 
-              element={user ? <AddPlacement /> : <Navigate to="/login" />} 
+              element={
+                <AdminRoute>
+                  <AddPlacement />
+                </AdminRoute>
+              } 
+            />
+
+            {/* Student Routes */}
+            <Route 
+              path="/student-dashboard" 
+              element={
+                <StudentRoute>
+                  <StudentDashboard />
+                </StudentRoute>
+              } 
             />
             <Route 
+              path="/placements" 
+              element={
+                <AuthRoute>
+                  <Placements />
+                </AuthRoute>
+              } 
+            />
+
+            {/* Root redirect based on role */}
+            <Route 
               path="/" 
-              element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} 
+              element={
+                user ? (
+                  <Navigate to={user.role === 'admin' ? '/admin-dashboard' : '/student-dashboard'} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              } 
+            />
+
+            {/* Catch all route */}
+            <Route 
+              path="*" 
+              element={
+                user ? (
+                  <Navigate to={user.role === 'admin' ? '/admin-dashboard' : '/student-dashboard'} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              } 
             />
           </Routes>
         </div>

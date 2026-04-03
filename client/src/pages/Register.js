@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { authAPI } from '../utils/api';
+import { authAPI } from '../utils/apiWithAuth';
 
 const Register = ({ onLogin }) => {
   const [formData, setFormData] = useState({
@@ -34,13 +34,12 @@ const Register = ({ onLogin }) => {
     }
 
     try {
-      const response = await authAPI.register({
-        username: formData.username,
-        email: formData.email,
-        password: formData.password
-      });
+      const response = await authAPI.register(formData);
       onLogin(response.user);
-      navigate('/dashboard');
+      
+      // Redirect based on user role
+      const redirectPath = response.user.role === 'admin' ? '/admin-dashboard' : '/student-dashboard';
+      navigate(redirectPath);
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {

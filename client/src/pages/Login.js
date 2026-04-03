@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { authAPI } from '../utils/api';
+import { authAPI } from '../utils/apiWithAuth';
 
 const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({
@@ -27,7 +27,10 @@ const Login = ({ onLogin }) => {
     try {
       const response = await authAPI.login(formData);
       onLogin(response.user);
-      navigate('/dashboard');
+      
+      // Redirect based on user role
+      const redirectPath = response.user.role === 'admin' ? '/admin-dashboard' : '/student-dashboard';
+      navigate(redirectPath);
     } catch (err) {
       setError(err.message || 'Login failed. Please try again.');
     } finally {

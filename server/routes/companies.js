@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const Company = require('../models/Company');
+const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/adminAuth');
+const validateObjectId = require('../middleware/validateObjectId');
 
-// Get all companies with search functionality
-router.get('/', async (req, res) => {
+// Get all companies with search functionality (Admin only)
+router.get('/', auth, adminAuth, async (req, res) => {
   try {
     const { search } = req.query;
     let query = {};
@@ -30,8 +33,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get a single company by ID
-router.get('/:id', async (req, res) => {
+// Get a single company by ID (Admin only)
+router.get('/:id', auth, adminAuth, validateObjectId, async (req, res) => {
   try {
     const company = await Company.findById(req.params.id);
     
@@ -49,8 +52,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Add a new company
-router.post('/', async (req, res) => {
+// Add a new company (Admin only)
+router.post('/', auth, adminAuth, async (req, res) => {
   try {
     const { company_name, location, package: salary, job_role } = req.body;
 
@@ -85,15 +88,16 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Update a company
-router.put('/:id', async (req, res) => {
+// Update a company (Admin only)
+router.put('/:id', auth, adminAuth, validateObjectId, async (req, res) => {
   try {
     const { company_name, location, package: salary, job_role } = req.body;
+    const companyId = req.params.id;
 
     // Check if another company with this name exists
     const existingCompany = await Company.findOne({ 
       company_name, 
-      _id: { $ne: req.params.id } 
+      _id: { $ne: companyId } 
     });
     
     if (existingCompany) {
@@ -103,7 +107,7 @@ router.put('/:id', async (req, res) => {
     }
 
     const company = await Company.findByIdAndUpdate(
-      req.params.id,
+      companyId,
       { company_name, location, package: salary, job_role },
       { new: true, runValidators: true }
     );
@@ -125,10 +129,11 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Delete a company
-router.delete('/:id', async (req, res) => {
+// Delete a company (Admin only)
+router.delete('/:id', auth, adminAuth, validateObjectId, async (req, res) => {
   try {
-    const company = await Company.findByIdAndDelete(req.params.id);
+    const companyId = req.params.id;
+    const company = await Company.findByIdAndDelete(companyId);
 
     if (!company) {
       return res.status(404).json({ message: 'Company not found' });

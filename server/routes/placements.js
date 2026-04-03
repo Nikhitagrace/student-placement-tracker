@@ -3,9 +3,14 @@ const router = express.Router();
 const Placement = require('../models/Placement');
 const Student = require('../models/Student');
 const Company = require('../models/Company');
+const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/adminAuth');
+const studentAuth = require('../middleware/studentAuth');
+const validateObjectId = require('../middleware/validateObjectId');
+const { validatePlacement } = require('../middleware/validation');
 
-// Get all placements with populated student and company data
-router.get('/', async (req, res) => {
+// Get all placements with populated student and company data (Admin only)
+router.get('/', auth, adminAuth, async (req, res) => {
   try {
     const placements = await Placement.find()
       .populate('studentId', 'name email branch cgpa')
@@ -22,15 +27,23 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get a single placement by ID
-router.get('/:id', async (req, res) => {
+// Get a single placement by ID (Admin only or own placement)
+router.get('/:id', auth, validateObjectId, async (req, res) => {
   try {
-    const placement = await Placement.findById(req.params.id)
+    const placementId = req.params.id;
+    const placement = await Placement.findById(placementId)
       .populate('studentId', 'name email branch cgpa')
       .populate('companyId', 'company_name location package job_role');
     
     if (!placement) {
       return res.status(404).json({ message: 'Placement not found' });
+    }
+    
+    // Students can only view their own placements
+    if (req.user.role === 'user' && placement.studentId._id.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        message: 'Access denied. You can only view your own placements.'
+      });
     }
     
     res.status(200).json(placement);
@@ -43,8 +56,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Add a new placement
-router.post('/', async (req, res) => {
+// Add a new placement (Admin only)
+router.post('/', auth, adminAuth, validatePlacement, async (req, res) => {
   try {
     const { studentId, companyId, placement_date, status, interview_round, notes } = req.body;
 
@@ -103,10 +116,11 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Update a placement
-router.put('/:id', async (req, res) => {
+// Update a placement (Admin only)
+router.put('/:id', auth, adminAuth, validateObjectId, async (req, res) => {
   try {
     const { studentId, companyId, placement_date, status, interview_round, notes } = req.body;
+    const placementId = req.params.id;
 
     // Validate student exists if studentId is provided
     if (studentId) {
@@ -125,7 +139,7 @@ router.put('/:id', async (req, res) => {
     }
 
     const placement = await Placement.findByIdAndUpdate(
-      req.params.id,
+      placementId,
       { studentId, companyId, placement_date, status, interview_round, notes },
       { new: true, runValidators: true }
     ).populate('studentId', 'name email branch cgpa')
@@ -155,10 +169,11 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Delete a placement
-router.delete('/:id', async (req, res) => {
+// Delete a placement (Admin only)
+router.delete('/:id', auth, adminAuth, validateObjectId, async (req, res) => {
   try {
-    const placement = await Placement.findByIdAndDelete(req.params.id);
+    const placementId = req.params.id;
+    const placement = await Placement.findByIdAndDelete(placementId);
 
     if (!placement) {
       return res.status(404).json({ message: 'Placement not found' });
@@ -180,10 +195,19 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// Get placements by student ID
-router.get('/student/:studentId', async (req, res) => {
+// Get placements by student ID (Admin or own placements)
+router.get('/student/:studentId', auth, validateObjectId('studentId'), async (req, res) => {
   try {
-    const placements = await Placement.find({ studentId: req.params.studentId })
+    const requestedStudentId = req.params.studentId;
+    
+    // Students can only view their own placements
+    if (req.user.role === 'user' && req.user._id.toString() !== requestedStudentId) {
+      return res.status(403).json({
+        message: 'Access denied. You can only view your own placements.'
+      });
+    }
+    
+    const placements = await Placement.find({ studentId: requestedStudentId })
       .populate('studentId', 'name email branch cgpa')
       .populate('companyId', 'company_name location package job_role')
       .sort({ createdAt: -1 });
@@ -198,10 +222,11 @@ router.get('/student/:studentId', async (req, res) => {
   }
 });
 
-// Get placements by company ID
-router.get('/company/:companyId', async (req, res) => {
+// Get placements by company ID (Admin only)
+router.get('/company/:companyId', auth, adminAuth, validateObjectId('companyId'), async (req, res) => {
   try {
-    const placements = await Placement.find({ companyId: req.params.companyId })
+    const companyId = req.params.companyId;
+    const placements = await Placement.find({ companyId })
       .populate('studentId', 'name email branch cgpa')
       .populate('companyId', 'company_name location package job_role')
       .sort({ createdAt: -1 });
